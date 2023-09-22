@@ -40,6 +40,17 @@ MonoBehaviour:
   - Fire
   - RespawnSpaceship
   - SynchroniseGame
+  - SyncAllPlayer
+  - AssignPlayerToAllRpc
+  - AddNewPlayer
+  - CreateNewPlayer
+  - SyncCamera
+  - GenerateRandomItem
+  - SetDirectionRPC
+  - EquipRPC
+  - DestroyRPC
+  - PlayerHitRpc
+  - PlayerFellRpc
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

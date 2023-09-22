@@ -7,15 +7,16 @@ TagManager:
   - Bullet
   - Land
   - Wall
+  - Weapon
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
-  - 
-  - 
+  - Guns
+  - Platforms
   - 
   - 
   - 

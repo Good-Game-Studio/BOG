@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 422a56265570ecf4d8dde8c8b301a80d, type: 3}
+  m_Name: Balanced
+  m_EditorClassIdentifier: 
+  className: Balanced
+  health: 55
+  speed: 50
+  jumpHeight: 50
+  accuracy: 50
+  knockbackResistance: 50
+  reloadSpeed: 50
+  size: 55
+  armor: 50
+  stamina: 50
+  healthRecovery: 50
+  meleeStrength: 50
+  specialChargeRate: 50
+  dodgeDistance: 50
+  meleeRange: 50
+  critChance: 12.5
+  critDamage: 162.8
+  evadeChance: 12.6
