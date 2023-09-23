@@ -105,6 +105,7 @@ MonoBehaviour:
   moveSpeed: 20
   rb: {fileID: 6904572786384010368}
   damage: 10
+  lifeOfBullet: 2.5
 --- !u!114 &7307674476006936040
 MonoBehaviour:
   m_ObjectHideFlags: 0

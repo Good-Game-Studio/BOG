@@ -11,13 +11,18 @@ public class Projectile : MonoBehaviour
     public int damage;
     PhotonView photonView;
     internal string playerIdOfCreator;
+    public float lifeOfBullet;
     private void Awake()
     {
         photonView = GetComponent<PhotonView>();
         SetDirection((Vector2)photonView?.InstantiationData[0]);
         playerIdOfCreator = (string)photonView?.InstantiationData[1];
-        StartCoroutine(DelayDestroy());
 
+    }
+    IEnumerator Start()
+    {
+        yield return new WaitForSeconds(lifeOfBullet);
+        PhotonNetwork.Destroy(gameObject);
     }
     public void SetDirection(Vector2 dir)
     {
@@ -38,10 +43,4 @@ public class Projectile : MonoBehaviour
         photonView.RPC(nameof(DestroyRPC), RpcTarget.AllBufferedViaServer); 
     }
     [PunRPC] public void DestroyRPC() { }
-    IEnumerator DelayDestroy()
-    {
-        yield return new WaitForSeconds(2.5f);
-        PhotonNetwork.Destroy(gameObject);
-
-    }
 }

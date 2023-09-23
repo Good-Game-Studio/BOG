@@ -58,7 +58,6 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     public void JoinOrCreateRoom(string preferredRoomName)
     {
-        //Debug.LogError(preferredRoomName);
         StopAllCoroutines();
         const float timeoutSeconds = 15f;
         StartCoroutine(DoCheckTimeout(timeoutSeconds));
@@ -153,6 +152,14 @@ public class RoomManager : MonoBehaviourPunCallbacks
             players.Remove(leavingPlayer);
         }
 
+    }
+    public override void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
+    {
+        base.OnMasterClientSwitched(newMasterClient);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            WeaponGenerator._instance.StartSpawning();
+        }
     }
     #endregion
     #region Synchronization Code
