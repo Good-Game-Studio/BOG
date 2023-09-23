@@ -76,6 +76,7 @@ public class PlayerMovementController : MonoBehaviour
 
         staminaBar.maxValue = maxStamina;
         currentStamina = maxStamina;
+        staminaBar.value = currentStamina;
     }
     private void FixedUpdate()
     {
@@ -83,7 +84,7 @@ public class PlayerMovementController : MonoBehaviour
         {
             return;
         }
-        Movevement();
+        Movement();
 
         if (staminaRegenAllowed && currentStamina < maxStamina)
         {
@@ -118,13 +119,15 @@ public class PlayerMovementController : MonoBehaviour
         this.direction = direction;
     }
 
-    private void Movevement()
+    private void Movement()
     {
         if (direction == Vector2.zero || !allowMovement)
         {
+            player.animator.SetBool("Running", false);
             return;
         }
         transform.Translate(direction.normalized * moveSpeed * 0.02f * (100 / player.playerAttributes.speed));
+        player.animator.SetBool("Running", true);
     }
     void ClampSpeed()
     {
@@ -149,6 +152,7 @@ public class PlayerMovementController : MonoBehaviour
         }
         rb.AddForce(Vector2.up * jumpPower * 0.2f * (100 / player.playerAttributes.jumpHeight), ForceMode2D.Impulse);
         currentJumps -= 1;
+        player.animator.SetBool("Jumping", true);
     }
 
     public void Dash()
@@ -222,6 +226,7 @@ public class PlayerMovementController : MonoBehaviour
         {
 
             currentJumps = totalJumps;
+            player.animator.SetBool("Jumping", false);
 
         }
         if (collision.collider.CompareTag("Wall"))
@@ -229,12 +234,13 @@ public class PlayerMovementController : MonoBehaviour
             onWall = true;
             currentJumps = totalJumps;
             rb.gravityScale = 0;
-
+            player.animator.SetBool("Jumping", false);
 
         }
         if (collision.collider.CompareTag("Player"))
         {
             //Debug.Log("player");
+            player.animator.SetBool("Jumping", false);
         }
     }
     private void OnCollisionStay2D(Collision2D collision)

@@ -48,7 +48,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
-        PhotonNetwork.Instantiate("Player Holder", new Vector3(), Quaternion.identity, 0, new object[] { PhotonNetwork.LocalPlayer.UserId, PlayerPrefs.GetString("gamerTag") });
+        PhotonNetwork.Instantiate("PlayerCyborg", new Vector3(), Quaternion.identity, 0, new object[] { PhotonNetwork.LocalPlayer.UserId, PlayerPrefs.GetString("gamerTag") });
         if (PhotonNetwork.IsMasterClient)
         {
             WeaponGenerator._instance.StartSpawning();

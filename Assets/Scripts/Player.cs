@@ -24,6 +24,8 @@ public class Player : MonoBehaviour
     internal bool isActionPressed;
     public GameObject body;
     public PlayerAttributes playerAttributes;
+    public Animator animator;
+    public GameObject rightHand;
     private void Awake()
     {
         photonView = GetComponent<PhotonView>();
@@ -35,7 +37,7 @@ public class Player : MonoBehaviour
         playerMovementController = GetComponent<PlayerMovementController>();
         attackGenerator = GetComponent<PlayerAttackGenerater>();
         //healthSlider = GetComponentInChildren<Slider>();
-        body = GetComponentInChildren<SpriteRenderer>().gameObject;
+        //body = GetComponentInChildren<SpriteRenderer>().gameObject;
     }
  
     private void OnEnable()
@@ -72,7 +74,9 @@ public class Player : MonoBehaviour
         if (Time.time > nextFire && currentWeapon != null)
         {
             nextFire = Time.time + currentWeapon.manager.fireRate;
-            attackGenerator.Fire(playerMovementController.direction, playerDirection);
+            Vector3 bulletDirection = playerDirection;
+            bulletDirection.y += UnityEngine.Random.Range(-5 / playerAttributes.accuracy, 5 / playerAttributes.accuracy);
+            attackGenerator.Fire(playerMovementController.direction, bulletDirection);
         }
     }
 
@@ -152,6 +156,9 @@ public class Player : MonoBehaviour
             //SetBodyAndWeaponTransform();
             currentWeapon.transform.rotation = Quaternion.identity;
             isActionPressed = false;
+            animator.SetLayerWeight(1, 0f);
+            animator.SetLayerWeight(2, 1f);
+            rightHand.SetActive(true);
         }
     }
 }
