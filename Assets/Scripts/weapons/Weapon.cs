@@ -1,6 +1,6 @@
-using JetBrains.Annotations;
 using Photon.Pun;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Weapon : MonoBehaviour
@@ -14,6 +14,7 @@ public class Weapon : MonoBehaviour
     bool isReloading;
     bool isFiring;
     float lastFireTime;
+    Vector2 bulletDirection; 
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -22,8 +23,9 @@ public class Weapon : MonoBehaviour
         totalBullets = manager.totalBullet;
         bulletInMag = manager.bulletPerMag;
     }
-    internal void Fire()
+    internal void Fire(Vector2 bulletDirection)
     {
+        this.bulletDirection = bulletDirection;
         if (manager.isAutomatitc)
         {
             StartCoroutine(Firing());
@@ -68,7 +70,7 @@ public class Weapon : MonoBehaviour
     void SpawnBullet()
     {
         Vector2 spawnPosition = new Vector2(transform.position.x + (player.playerDirection.x * 1.1f), transform.position.y + (player.playerDirection.y * 1.1f));
-        PhotonNetwork.Instantiate("Bullet", spawnPosition, Quaternion.identity, 0, new object[] { player.playerDirection });
+        PhotonNetwork.Instantiate("BulletMedium", spawnPosition, Quaternion.identity, 0, new object[] { bulletDirection });
         bulletInMag--;
         lastFireTime = Time.time;
         player.UpdateWeaponInfo(weaponName, bulletInMag, totalBullets);
@@ -105,12 +107,9 @@ public class Weapon : MonoBehaviour
         {
             return;
         }
-        var body = playerDetail.player.GetComponentInChildren<SpriteRenderer>().gameObject;
-        var bodyScale = body.transform.localScale;
-        body.transform.localScale= new Vector3(1,1,1);
-        transform.position = (Vector2)body.transform.position + (Vector2.right * manager.weaponOffset);
-        transform.parent = body.transform;
-        body.transform.localScale = bodyScale;
+        var hand = player.rightHand;
+        transform.position = (Vector2)hand.transform.position + (Vector2.right * manager.weaponOffset);
+        transform.SetParent(hand.transform);
         player.UpdateWeaponInfo(weaponName, bulletInMag, totalBullets);
     }
     public void Destroy()

@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 422a56265570ecf4d8dde8c8b301a80d, type: 3}
+  m_Name: Broken
+  m_EditorClassIdentifier: 
+  className: Broken
+  health: 100
+  speed: 100
+  jumpHeight: 100
+  accuracy: 100
+  knockbackResistance: 100
+  reloadSpeed: 100
+  size: 10
+  armor: 100
+  stamina: 100
+  healthRecovery: 100
+  meleeStrength: 100
+  specialChargeRate: 100
+  dodgeDistance: 100
+  meleeRange: 100
+  critChance: 25
+  critDamage: 200
+  evadeChance: 25

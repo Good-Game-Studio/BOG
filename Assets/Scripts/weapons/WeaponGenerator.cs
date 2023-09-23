@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class WeaponGenerator : MonoBehaviour
 {
-
     public static WeaponGenerator _instance;
     public List<GameObject> gunPrefabs = new List<GameObject>();
     public List<GameObject> allGenerated = new List<GameObject>();
@@ -22,9 +21,7 @@ public class WeaponGenerator : MonoBehaviour
     public void StartSpawning()
     {
         StartCoroutine(SpawnRoutine());
-
     }
-
     IEnumerator SpawnRoutine()
     {
         while (true)
@@ -34,9 +31,7 @@ public class WeaponGenerator : MonoBehaviour
             {
                 yield return new WaitForSeconds(1f);
             }
-
             GenerateRandom();
-
         }
     }
     [ContextMenu("Generate")]

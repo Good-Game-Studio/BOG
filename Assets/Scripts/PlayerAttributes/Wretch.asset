@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 422a56265570ecf4d8dde8c8b301a80d, type: 3}
+  m_Name: Wretch
+  m_EditorClassIdentifier: 
+  className: Wretch
+  health: 10
+  speed: 1
+  jumpHeight: 1
+  accuracy: 1
+  knockbackResistance: 1
+  reloadSpeed: 1
+  size: 10
+  armor: 0
+  stamina: 10
+  healthRecovery: 0
+  meleeStrength: 1
+  specialChargeRate: 1
+  dodgeDistance: 10
+  meleeRange: 10
+  critChance: 1
+  critDamage: 125
+  evadeChance: 0

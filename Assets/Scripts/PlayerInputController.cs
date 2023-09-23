@@ -28,6 +28,7 @@ public class PlayerInputController : MonoBehaviour
         playerActions.Attack1.started +=_=> Fire();
         playerActions.Action.started += _ => { player.isActionPressed = true; };
         playerActions.Action.canceled += _ => { player.isActionPressed = false; };
+        playerActions.Dash.started += Dash;
     }
     private void OnDisable()
     {
@@ -38,7 +39,9 @@ public class PlayerInputController : MonoBehaviour
         playerActions.Attack1.started -=_=> Fire();
         playerActions.Action.started -= _ => { player.isActionPressed = true; };
         playerActions.Action.canceled -= _ => { player.isActionPressed = false; };
+        playerActions.Dash.started -= Dash;
     }
+
 
     private void Fire()
     {
@@ -60,6 +63,13 @@ public class PlayerInputController : MonoBehaviour
         if (!photonView.IsMine)
             return;
         player.Move(context);
+    }
+
+    private void Dash(InputAction.CallbackContext context)
+    {
+        if(!photonView.IsMine)
+		return;
+        player.Dash(context);
     }
 
   

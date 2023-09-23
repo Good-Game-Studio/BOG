@@ -10,12 +10,11 @@ public class Player : MonoBehaviour
 {
     PhotonView photonView;
     PlayerMovementController playerMovementController;
-    PlayerAttackGenerater attackGenerator;
     internal PlayerInputController playerInputController;
     public float weaponOffset;
     public Vector2 playerDirection = Vector2.right;
     public Health health;
-    Slider slider;
+    public Slider healthSlider;
     [SerializeField] float fireRate = 0.5f;
     float nextFire = 0.0f;
     public List<Weapon> weapons = new();
@@ -25,6 +24,9 @@ public class Player : MonoBehaviour
     internal bool isActionPressed;
     public GameObject body;
 
+    public PlayerAttributes playerAttributes;
+    public Animator animator;
+    public GameObject rightHand;
     private void Awake()
     {
         playerInputController = GetComponent<PlayerInputController>();
@@ -35,9 +37,6 @@ public class Player : MonoBehaviour
         RoomManager._instance.players.Add(playerDetails);
         RoomManager._instance.targetGroup.AddMember(transform,1,3);
         playerMovementController = GetComponent<PlayerMovementController>();
-        attackGenerator = GetComponent<PlayerAttackGenerater>();
-        slider = GetComponentInChildren<Slider>();
-        body = GetComponentInChildren<SpriteRenderer>().gameObject;
     }
  
     private void OnEnable()
@@ -66,20 +65,28 @@ public class Player : MonoBehaviour
 
     private void GetAttack()
     {
-        slider.value = health.currentHealth / health.totalHealth;
+        healthSlider.value = health.currentHealth / health.totalHealth;
     }
 
     public void Fire()
     {
         if (currentWeapon != null)
         {
-            currentWeapon.Fire();
+            Vector2 bulletDirection = playerDirection;
+            bulletDirection.y += UnityEngine.Random.Range(-5 / playerAttributes.accuracy, 5 / playerAttributes.accuracy);
+            currentWeapon.Fire(bulletDirection);
         }
     }
 
+   
     public void Jump(InputAction.CallbackContext obj)
     {
         playerMovementController.Jump();
+    }
+
+    public void Dash(InputAction.CallbackContext obj)
+    {
+        playerMovementController.Dash();
     }
     public void Move(InputAction.CallbackContext obj)
     {
@@ -152,12 +159,16 @@ public class Player : MonoBehaviour
             //SetBodyAndWeaponTransform();
             currentWeapon.transform.rotation = Quaternion.identity;
             isActionPressed = false;
+            animator.SetLayerWeight(1, 0f);
+            animator.SetLayerWeight(2, 1f);
+            rightHand.SetActive(true);
         }
     }
 }
 [System.Serializable]
 public class Health
 {
+    public bool isInvulnerable;
     public float totalHealth;
     public float currentHealth;
     public DelegateFunc OnGetAttack;
@@ -172,6 +183,8 @@ public class Health
     }
     public void GetDamage(float damageAmount)
     {
+        if (isInvulnerable)
+            return;
         currentHealth -= damageAmount;
         if (currentHealth <= 0)
         {

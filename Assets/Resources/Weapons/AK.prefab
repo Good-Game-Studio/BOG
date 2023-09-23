@@ -11,13 +11,13 @@ GameObject:
   - component: {fileID: 2015416867779723718}
   - component: {fileID: 2015416867779723719}
   - component: {fileID: 5144754669018603024}
-  - component: {fileID: -7335530284407649685}
-  - component: {fileID: -2864283091585653609}
-  - component: {fileID: 4445509901089293527}
-  - component: {fileID: 7841723197122223126}
-  - component: {fileID: 622731468614061028}
+  - component: {fileID: -2853697104787776982}
+  - component: {fileID: -5286662769234922034}
+  - component: {fileID: 7816732519135534460}
+  - component: {fileID: -5524317647203701508}
+  - component: {fileID: -4945631649548567136}
   m_Layer: 6
-  m_Name: AK
+  m_Name: Ak
   m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -108,7 +108,7 @@ MonoBehaviour:
   player: {fileID: 0}
   bulletInMag: 0
   totalBullets: 0
---- !u!61 &-7335530284407649685
+--- !u!61 &-2853697104787776982
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -153,7 +153,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.01, y: 1}
   m_EdgeRadius: 0
---- !u!50 &-2864283091585653609
+--- !u!50 &-5286662769234922034
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -180,7 +180,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &4445509901089293527
+--- !u!114 &7816732519135534460
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -199,11 +199,11 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 622731468614061028}
+  - {fileID: -4945631649548567136}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!58 &7841723197122223126
+--- !u!58 &-5524317647203701508
 CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -238,7 +238,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 1.5
---- !u!114 &622731468614061028
+--- !u!114 &-4945631649548567136
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -1,5 +1,7 @@
 using Photon.Pun;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovementController : MonoBehaviour
 {
@@ -23,6 +25,31 @@ public class PlayerMovementController : MonoBehaviour
     [Space]
     public float wallMoveDownSpeed;
     public float wallMoveDownSpeedLimit;
+    public bool allowMovement = true;
+
+    [Space]
+    [Header ("Attributes")]
+    public float currentArmor;
+
+    [Space]
+    [Header("Stamina")]
+    public Slider staminaBar;
+    float currentStamina;
+    bool staminaRegenAllowed = true;
+    float staminaRegenTimerThresh = 1.5f;
+    float staminaRegenTimer = 0f;
+    float maxStamina;
+
+    [Space]
+    [Header("Dash")]
+    float dashForce = 50f;
+    bool allowDashing = true;
+    float currentDashTimer;
+    float dashCooldown = 2f;
+    int dashStamina = 10;
+    float dashTime;
+    Vector2 lastVelocity = Vector2.zero;
+
     private void Awake()
     {
         photonView = GetComponent<PhotonView>();
@@ -33,6 +60,10 @@ public class PlayerMovementController : MonoBehaviour
         }
         player = GetComponent<Player>();
         rb = GetComponent<Rigidbody2D>();
+
+        //Set Attributes
+        maxStamina = player.playerAttributes.stamina;
+        dashTime = (100 / player.playerAttributes.dodgeDistance) / 30;
     }
     private void Start()
     {
@@ -41,6 +72,11 @@ public class PlayerMovementController : MonoBehaviour
             return;
         }
         currentJumps = totalJumps;
+
+
+        staminaBar.maxValue = maxStamina;
+        currentStamina = maxStamina;
+        staminaBar.value = currentStamina;
     }
     private void FixedUpdate()
     {
@@ -48,7 +84,23 @@ public class PlayerMovementController : MonoBehaviour
         {
             return;
         }
-        Movevement();
+        Movement();
+
+        if (staminaRegenAllowed && currentStamina < maxStamina)
+        {
+            currentStamina += 1;
+            currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
+            staminaBar.value = currentStamina;
+        }
+        else if (!staminaRegenAllowed)
+        {
+            staminaRegenTimer += Time.deltaTime;
+            if (staminaRegenTimer > staminaRegenTimerThresh)
+            {
+                staminaRegenAllowed = true;
+                staminaRegenTimer = 0f;
+            }
+        }
     }
     private void Update()
     {
@@ -67,13 +119,15 @@ public class PlayerMovementController : MonoBehaviour
         this.direction = direction;
     }
 
-    private void Movevement()
+    private void Movement()
     {
-        if (direction == Vector2.zero)
+        if (direction == Vector2.zero || !allowMovement)
         {
+            player.animator.SetBool("Running", false);
             return;
         }
-        transform.Translate(direction.normalized * moveSpeed * 0.05f);
+        transform.Translate(direction.normalized * moveSpeed * 0.02f * (100 / player.playerAttributes.speed));
+        player.animator.SetBool("Running", true);
     }
     void ClampSpeed()
     {
@@ -92,13 +146,73 @@ public class PlayerMovementController : MonoBehaviour
     }
     public void Jump()
     {
-        if (currentJumps <= 0)
+        if (currentJumps <= 0 || !allowMovement)
         {
             return;
         }
-        rb.AddForce(Vector2.up * jumpPower * 0.2f, ForceMode2D.Impulse);
+        rb.AddForce(Vector2.up * jumpPower * 0.2f * (100 / player.playerAttributes.jumpHeight), ForceMode2D.Impulse);
         currentJumps -= 1;
+        player.animator.SetBool("Jumping", true);
     }
+
+    public void Dash()
+    {
+        if (!allowDashing || !staminaConsumed(dashStamina))
+            return;
+
+        allowDashing = false;
+        allowMovement = false;
+        currentDashTimer = dashTime + Time.time;  //set dash timer for count down
+        lastVelocity = rb.velocity;
+        rb.velocity = Vector2.zero;
+
+        StartCoroutine(DashCroutine());
+    }
+
+    IEnumerator DashCroutine()
+    {
+        player.health.isInvulnerable = true;
+        rb.gravityScale = 0;
+        while (currentDashTimer > Time.time)
+        {
+            rb.velocity = Vector2.right * player.playerDirection.x * dashForce;
+
+            yield return new WaitForSeconds(0.01f);
+        }
+
+        StartCoroutine(DashCooldownCoroutine());
+    }
+
+    IEnumerator DashCooldownCoroutine()
+    {
+        allowMovement = true;
+        player.health.isInvulnerable = false;
+        rb.gravityScale = 1;
+        rb.velocity = lastVelocity;
+        float dashCDTimer = dashCooldown + Time.time; //set dash cooldown timer for count down
+        while (dashCDTimer > Time.time)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+        allowDashing = true;   
+    }
+
+    public bool staminaConsumed(int staminaCost)
+    {
+        if (staminaCost <= currentStamina)
+        {
+            currentStamina -= staminaCost;
+            staminaRegenAllowed = false;
+            staminaRegenTimer = 0;
+            staminaBar.value = currentStamina;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (!photonView.IsMine)
@@ -109,6 +223,7 @@ public class PlayerMovementController : MonoBehaviour
         {
 
             currentJumps = totalJumps;
+            player.animator.SetBool("Jumping", false);
 
         }
         if (collision.collider.CompareTag("Wall"))
@@ -116,12 +231,13 @@ public class PlayerMovementController : MonoBehaviour
             onWall = true;
             currentJumps = totalJumps;
             rb.gravityScale = 0;
-
+            player.animator.SetBool("Jumping", false);
 
         }
         if (collision.collider.CompareTag("Player"))
         {
             //Debug.Log("player");
+            player.animator.SetBool("Jumping", false);
         }
     }
     private void OnCollisionStay2D(Collision2D collision)
@@ -133,7 +249,6 @@ public class PlayerMovementController : MonoBehaviour
         if (collision.collider.CompareTag("Wall"))
         {
             onWall = true;
-            //rb.AddForce(Vector2.down * wallMoveDownSpeed, ForceMode2D.Impulse);
         }
     }
     private void OnCollisionExit2D(Collision2D collision)
