@@ -22,5 +22,5 @@ MonoBehaviour:
   explosionForce: 0
   upwordDisplace: 0
   weaponOffset: 1
-  isAutomatitc: 1
+  isAutomatitc: 0
   oneTimeUse: 0

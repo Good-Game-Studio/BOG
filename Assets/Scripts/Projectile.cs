@@ -10,10 +10,12 @@ public class Projectile : MonoBehaviour
     [SerializeField] Rigidbody2D rb;
     public int damage;
     PhotonView photonView;
+    internal string playerIdOfCreator;
     private void Awake()
     {
         photonView = GetComponent<PhotonView>();
         SetDirection((Vector2)photonView?.InstantiationData[0]);
+        playerIdOfCreator = (string)photonView?.InstantiationData[1];
         StartCoroutine(DelayDestroy());
 
     }
@@ -24,7 +26,7 @@ public class Projectile : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision) 
     {
-        if (!photonView.IsMine)
+        if (!photonView.IsMine || collision.collider.CompareTag("Player") && collision.collider.GetComponent<Player>().playerDetails.id == playerIdOfCreator)
         {
             return;
         }

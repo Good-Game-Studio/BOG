@@ -14,9 +14,12 @@ public class Weapon : MonoBehaviour
     bool isReloading;
     bool isFiring;
     float lastFireTime;
-    Vector2 bulletDirection; 
+    Vector2 bulletDirection;
+    public Animator animatior;
     private void Awake()
     {
+        animatior = GetComponent<Animator>();
+        animatior.enabled = false;
         spriteRenderer = GetComponent<SpriteRenderer>();
         photonView = GetComponent<PhotonView>();
         weaponName = manager.name.Split(' ')[0]; 
@@ -25,22 +28,12 @@ public class Weapon : MonoBehaviour
     }
     internal void Fire(Vector2 bulletDirection)
     {
+        if (bulletInMag <= 0 || isReloading || isFiring)
+        {
+            return;
+        }
         this.bulletDirection = bulletDirection;
-        if (manager.isAutomatitc)
-        {
-            StartCoroutine(Firing());
-        }
-        else if (Time.time > lastFireTime + manager.fireRate || bulletInMag == manager.bulletPerMag)
-        {
-            SpawnBullet();
-            if (bulletInMag <= 0)
-            {
-                StartCoroutine(ReloadDelay());
-            }
-            
-        }
-
-       
+        StartCoroutine(Firing());
     }
     IEnumerator ReloadDelay()
     {
@@ -78,7 +71,7 @@ public class Weapon : MonoBehaviour
     void SpawnBullet()
     {
         Vector2 spawnPosition = new Vector2(transform.position.x + (player.playerDirection.x * 1.1f), transform.position.y + (player.playerDirection.y * 1.1f));
-        PhotonNetwork.Instantiate("BulletMedium", spawnPosition, Quaternion.identity, 0, new object[] { bulletDirection });
+        PhotonNetwork.Instantiate("BulletMedium", spawnPosition, Quaternion.LookRotation(player.playerDirection,Vector2.up), 0, new object[] { bulletDirection,player.playerDetails.id });
         bulletInMag--;
         lastFireTime = Time.time;
         player.UpdateWeaponInfo(weaponName, bulletInMag, totalBullets);
@@ -87,18 +80,37 @@ public class Weapon : MonoBehaviour
     IEnumerator Firing()
     {
         isFiring = true;
-        while (player.playerInputController.playerActions.Attack1.IsInProgress()  && bulletInMag>0)
+        Sprite sprite = spriteRenderer.sprite;
+        animatior.enabled = true;
+        if (manager.isAutomatitc)
         {
-            SpawnBullet();
-            yield return new WaitForSeconds(manager.fireRate);
+            while (player.playerInputController.playerActions.Attack1.IsInProgress() && bulletInMag > 0)
+            {
+                SpawnBullet();
+                yield return new WaitForSeconds(manager.fireRate);
+            }
         }
+        else
+        {
+            if (Time.time > lastFireTime + manager.fireRate || bulletInMag == manager.bulletPerMag)
+            {
+                SpawnBullet();
+            }
+            float initTime = animatior.GetCurrentAnimatorStateInfo(0).normalizedTime;
+            while (animatior.GetCurrentAnimatorStateInfo(0).normalizedTime <=initTime+ 1f)
+            {
+                yield return null;
+            }
+        }
+        animatior.enabled = false;
+        spriteRenderer.sprite = sprite;
         isFiring = false;
-
         if (bulletInMag<=0)
         {
             StartCoroutine(ReloadDelay());
         }
     }
+
     public void Equip(string id,Vector2 playerDirection)
     {
         photonView.RPC(nameof(EquipRPC), RpcTarget.AllBufferedViaServer,id);
@@ -115,10 +127,17 @@ public class Weapon : MonoBehaviour
         {
             return;
         }
+        SetWeaponParrentAndDirection();
+        player.UpdateWeaponInfo(weaponName, bulletInMag, totalBullets);
+    }
+    void SetWeaponParrentAndDirection()
+    {
+        var bodyScale = player.body.transform.localScale;
+        player.body.transform.localScale = new Vector3(1, 1, 1);
         var hand = player.rightHand;
         transform.position = (Vector2)hand.transform.position + (Vector2.right * manager.weaponOffset);
         transform.SetParent(hand.transform);
-        player.UpdateWeaponInfo(weaponName, bulletInMag, totalBullets);
+        player.body.transform.localScale = bodyScale;
     }
     public void Destroy()
     {

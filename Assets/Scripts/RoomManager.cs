@@ -37,7 +37,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
     private void Start()
     {
         PhotonNetwork.Disconnect();
-        StartCoroutine(DoJoinOrCreateRoom("stg1"));
+        StartCoroutine(DoJoinOrCreateRoom("stg"));
     }
     #region All Room Settings
     public override void OnCreatedRoom()

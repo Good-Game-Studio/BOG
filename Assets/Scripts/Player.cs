@@ -129,7 +129,7 @@ public class Player : MonoBehaviour
         {
             return;
         }
-        if (collision.collider.CompareTag("Bullet"))
+        if (collision.collider.CompareTag("Bullet") && collision.collider.GetComponent<Projectile>().playerIdOfCreator != playerDetails.id)
         {
             RoomManager._instance.PlayerHit(playerDetails.id, collision.collider.GetComponent<Projectile>().damage);
             GetComponent<Rigidbody2D>().AddForce(collision.otherRigidbody.velocity.normalized * 100f * (health.totalHealth / health.currentHealth));

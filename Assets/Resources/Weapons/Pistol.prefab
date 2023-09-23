@@ -16,6 +16,8 @@ GameObject:
   - component: {fileID: -3141625841922274617}
   - component: {fileID: 5663393839562997244}
   - component: {fileID: -1921749028550774109}
+  - component: {fileID: 6805387229587515257}
+  - component: {fileID: 49464688156705073}
   m_Layer: 6
   m_Name: Pistol
   m_TagString: Weapon
@@ -108,6 +110,7 @@ MonoBehaviour:
   player: {fileID: 0}
   bulletInMag: 0
   totalBullets: 0
+  animatior: {fileID: 0}
 --- !u!61 &7713731734738153824
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -254,3 +257,40 @@ MonoBehaviour:
   m_SynchronizeRotation: 0
   m_SynchronizeScale: 1
   m_UseLocal: 1
+--- !u!95 &6805387229587515257
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2015416867779723716}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 207e85fdb6b03e644a71782c97e28264, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &49464688156705073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2015416867779723716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters: []
+  m_SynchronizeLayers: []
