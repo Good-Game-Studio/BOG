@@ -47,7 +47,15 @@ public class Weapon : MonoBehaviour
         if (totalBullets >0)
         {
             isReloading = true;
-            yield return new WaitForSeconds(manager.reloadingTime);
+            float time = 0;
+            while (time< manager.reloadingTime)
+            {
+                player.reloadingImage.fillAmount = 1-time/manager.reloadingTime;
+                time += Time.deltaTime;
+                yield return null;
+            }
+            player.reloadingImage.fillAmount = 0;
+
             Reload();
             isReloading = false;
         }

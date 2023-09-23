@@ -27,6 +27,7 @@ public class Player : MonoBehaviour
     public PlayerAttributes playerAttributes;
     public Animator animator;
     public GameObject rightHand;
+    public Image reloadingImage;
     private void Awake()
     {
         playerInputController = GetComponent<PlayerInputController>();
