@@ -1,7 +1,6 @@
 using Photon.Pun;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -24,24 +23,33 @@ public class PlayerInputController : MonoBehaviour
         playerActions.Enable();
         playerActions.Movement.started += Move;
         playerActions.Movement.canceled += Move;
-        playerActions.Jump.started += Jump;
+        playerActions.Jump.started += _ => Jump();
         playerActions.Attack1.started +=_=> Fire();
         playerActions.Action.started += _ => { player.isActionPressed = true; };
         playerActions.Action.canceled += _ => { player.isActionPressed = false; };
-        playerActions.Dash.started += Dash;
-        playerActions.MeleeAttack.started += MeleeAttack;
+        playerActions.Dash.started += _ => Dash();
+        playerActions.MeleeAttack.started += _ =>  MeleeAttack();
+        playerActions.Throw.started += _ =>  Throw();
     }
+
+    private void Throw()
+    {
+        player.Throw();
+    }
+
     private void OnDisable()
     {
         playerActions.Disable();
         playerActions.Movement.started -= Move;
         playerActions.Movement.canceled -= Move;
-        playerActions.Jump.started -= Jump;
+        playerActions.Jump.started -= _ => Jump();
         playerActions.Attack1.started -=_=> Fire();
         playerActions.Action.started -= _ => { player.isActionPressed = true; };
         playerActions.Action.canceled -= _ => { player.isActionPressed = false; };
-        playerActions.Dash.started -= Dash;
-        playerActions.MeleeAttack.started -= MeleeAttack;
+        playerActions.Dash.started -= _=> Dash();
+        playerActions.MeleeAttack.started -= _ => MeleeAttack();
+        playerActions.Throw.started -= _ => Throw();
+
     }
 
 
@@ -53,11 +61,11 @@ public class PlayerInputController : MonoBehaviour
         player.Fire();
     }
 
-    private void Jump(InputAction.CallbackContext context)
+    private void Jump()
     {
         if (!photonView.IsMine)
             return;
-        player.Jump(context);
+        player.Jump();
     }
 
     private void Move(InputAction.CallbackContext context)
@@ -67,18 +75,18 @@ public class PlayerInputController : MonoBehaviour
         player.Move(context);
     }
 
-    private void Dash(InputAction.CallbackContext context)
+    private void Dash()
     {
         if(!photonView.IsMine)
 		    return;
-        player.Dash(context);
+        player.Dash();
     }
 
-    private void MeleeAttack(InputAction.CallbackContext context)
+    private void MeleeAttack()
     {
         if (!photonView.IsMine)
             return;
-        player.MeleeAttack(context);
+        player.MeleeAttack();
     }
 
 

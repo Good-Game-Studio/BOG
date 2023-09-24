@@ -1,4 +1,5 @@
 using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,8 +17,15 @@ public class Weapon : MonoBehaviour
     float lastFireTime;
     Vector2 bulletDirection;
     public Animator animatior;
+    Rigidbody2D rb;
+    private BoxCollider2D boxCollider;
+    private CircleCollider2D circleCollider;
+
     private void Awake()
     {
+        rb = GetComponent<Rigidbody2D>();
+        boxCollider = GetComponent<BoxCollider2D>();
+        circleCollider = GetComponent<CircleCollider2D>();
         animatior = GetComponent<Animator>();
         animatior.enabled = false;
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -66,7 +74,7 @@ public class Weapon : MonoBehaviour
             totalBullets = 0;
             bulletInMag = totalBullets;
         }
-       player?.UpdateWeaponInfo(weaponName,bulletInMag,totalBullets);
+       player?.UpdateWeaponInfo(weaponName,bulletInMag.ToString(), totalBullets.ToString());
     }
     void SpawnBullet()
     {
@@ -75,7 +83,7 @@ public class Weapon : MonoBehaviour
             0, new object[] { bulletDirection,player.playerDetails.id ,manager.bulletLifetime,manager.damage});
         bulletInMag--;
         lastFireTime = Time.time;
-        player.UpdateWeaponInfo(weaponName, bulletInMag, totalBullets);
+        player.UpdateWeaponInfo(weaponName, bulletInMag.ToString(), totalBullets.ToString());
     }
 
     IEnumerator Firing()
@@ -119,9 +127,9 @@ public class Weapon : MonoBehaviour
     [PunRPC]
     public void EquipRPC(string id)
     {
-        Destroy(GetComponent<Rigidbody2D>());
-        Destroy(GetComponent<BoxCollider2D>());
-        Destroy(GetComponent<CircleCollider2D>());
+        rb.simulated = false;
+        boxCollider.enabled = false;
+        circleCollider.enabled = false;
         PlayerDetails playerDetail = RoomManager._instance.players.Find(p => p.id == id);
         player = playerDetail.player.GetComponent<Player>();
         if (player == null)
@@ -129,10 +137,11 @@ public class Weapon : MonoBehaviour
             return;
         }
         SetWeaponParrentAndDirection();
-        player.UpdateWeaponInfo(weaponName, bulletInMag, totalBullets);
+        player.UpdateWeaponInfo(weaponName, bulletInMag.ToString(), totalBullets.ToString());
     }
     void SetWeaponParrentAndDirection()
     {
+        transform.localScale = new Vector3(1, 1, 1);
         var bodyScale = player.body.transform.localScale;
         player.body.transform.localScale = new Vector3(1, 1, 1);
         var hand = player.rightHand;
@@ -152,5 +161,29 @@ public class Weapon : MonoBehaviour
     {
         WeaponGenerator._instance.allGenerated.Remove(gameObject);
         Destroy(gameObject);
+    }
+    public void Throw()
+    {
+        if (isFiring||isReloading)
+        {
+            return;
+        }
+        photonView.RPC(nameof(ThrowRPC), RpcTarget.AllBufferedViaServer);
+    }
+    [PunRPC]
+    internal void ThrowRPC()
+    {
+        rb.simulated = true;
+        boxCollider.enabled = true;
+        circleCollider.enabled = true;
+        rb.AddForce(player.playerDirection * 5f*Vector2.up, ForceMode2D.Impulse);
+        player.rightHand.SetActive(false);
+        transform.parent = null;
+        player.currentWeapon = null;
+        player?.ResetWeaponInfo();
+        player = null;
+        
+        
+
     }
 }

@@ -17,14 +17,12 @@ public class Player : MonoBehaviour
     public Health health;
     public Slider healthSlider;
     [SerializeField] float fireRate = 0.5f;
-    float nextFire = 0.0f;
     public List<Weapon> weapons = new();
     public Weapon currentWeapon;
     public PlayerDetails playerDetails;
     public TextMeshProUGUI lifeText, gamerTagText;
     internal bool isActionPressed;
     public GameObject body;
-
     public PlayerAttributes playerAttributes;
     public Animator animator;
     public GameObject rightHand;
@@ -84,17 +82,17 @@ public class Player : MonoBehaviour
     }
 
    
-    public void Jump(InputAction.CallbackContext obj)
+    public void Jump()
     {
         playerMovementController.Jump();
     }
 
-    public void Dash(InputAction.CallbackContext obj)
+    public void Dash()
     {
         playerMovementController.Dash();
     }
 
-    public void MeleeAttack(InputAction.CallbackContext obj)
+    public void MeleeAttack()
     {
         if (isMeleeAttacking || !playerMovementController.staminaConsumed(meleeStamina))
             return;
@@ -147,10 +145,15 @@ public class Player : MonoBehaviour
         }
 
     }
-    public void UpdateWeaponInfo(string nameOfWeapon,int bulletInMag,int totalBullets)
+    public void UpdateWeaponInfo(string nameOfWeapon,string bulletInMag,string totalBullets)
     {
         RoomManager._instance.weaponInfoText.text = $"{nameOfWeapon} : {bulletInMag} / {totalBullets}";
     }
+    public void ResetWeaponInfo()
+    {
+        RoomManager._instance.weaponInfoText.text = "";
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
 
@@ -191,11 +194,13 @@ public class Player : MonoBehaviour
             currentWeapon = collision.gameObject.GetComponent<Weapon>();
             currentWeapon.Equip(playerDetails.id,playerDirection);
             weapons.Add(currentWeapon);
-            //SetBodyAndWeaponTransform();
             currentWeapon.transform.rotation = Quaternion.identity;
             isActionPressed = false;
-           
         }
+    }
+    internal void Throw()
+    {
+        currentWeapon?.Throw();
     }
 }
 [System.Serializable]
@@ -213,6 +218,7 @@ public class Health
     public void Refill()
     {
         currentHealth = totalHealth;
+        OnGetAttack();
     }
     public void GetDamage(float damageAmount)
     {
