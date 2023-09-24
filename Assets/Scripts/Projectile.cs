@@ -8,7 +8,7 @@ public class Projectile : MonoBehaviour
     public float moveSpeed;
     Vector2 direction = Vector2.zero;
     [SerializeField] Rigidbody2D rb;
-    public int damage;
+    public float damage;
     PhotonView photonView;
     internal string playerIdOfCreator;
     public float lifeOfBullet;
@@ -18,6 +18,7 @@ public class Projectile : MonoBehaviour
         photonView = GetComponent<PhotonView>();
         SetDirection((Vector2)photonView?.InstantiationData[0]);
         playerIdOfCreator = (string)photonView?.InstantiationData[1];
+        damage = (float)photonView?.InstantiationData[3];
 
     }
     IEnumerator Start()

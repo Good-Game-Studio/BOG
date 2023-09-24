@@ -8,6 +8,7 @@ public class WeaponManager : ScriptableObject
     public float reloadingTime;
     public float bulletSpeed;
     public float knockBackValue;
+    public float damage;
     public int totalBullet;
     public int bulletPerMag;
     public float explosionRadius;

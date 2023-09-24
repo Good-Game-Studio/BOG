@@ -173,6 +173,10 @@ public class RoomManager : MonoBehaviourPunCallbacks
             pingText.text ="Ping : " +PhotonNetwork.GetPing().ToString();
         }
     }
+    public Player GetPlayer(string id)
+    {
+        return players.Find(x => x.id == id).player.GetComponent<Player>();
+    }
     public void PlayerHit(string id,float damage)
     {
         photonView.RPC(nameof(PlayerHitRpc), RpcTarget.AllBufferedViaServer,id,damage);

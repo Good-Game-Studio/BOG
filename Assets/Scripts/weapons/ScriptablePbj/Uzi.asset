@@ -16,6 +16,7 @@ MonoBehaviour:
   reloadingTime: 1
   bulletSpeed: 20
   knockBackValue: 30
+  damage: 10
   totalBullet: 60
   bulletPerMag: 30
   explosionRadius: 0
