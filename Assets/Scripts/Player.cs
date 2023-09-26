@@ -153,20 +153,6 @@ public class Player : MonoBehaviour
     {
         RoomManager._instance.weaponInfoText.text = "";
     }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-
-        if (!photonView.IsMine)
-        {
-            return;
-        }
-        if (collision.collider.CompareTag("Bullet") && collision.collider.GetComponent<Projectile>().playerIdOfCreator != playerDetails.id)
-        {
-            RoomManager._instance.PlayerHit(playerDetails.id, collision.collider.GetComponent<Projectile>().damage);
-            GetComponent<Rigidbody2D>().AddForce(collision.otherRigidbody.velocity.normalized * 100f * (health.totalHealth / health.currentHealth));
-        }
-    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!photonView.IsMine)
@@ -180,6 +166,11 @@ public class Player : MonoBehaviour
         {
             RoomManager._instance.PlayerHit(playerDetails.id, collision.GetComponent<MeleeWeapon>().damage);
             GetComponent<Rigidbody2D>().AddForce((collision.transform.position - transform.position) * 100f * (health.totalHealth / health.currentHealth));
+        }
+        if (collision.CompareTag("Bullet") && collision.GetComponent<Projectile>().playerIdOfCreator != playerDetails.id)
+        {
+            RoomManager._instance.PlayerHit(playerDetails.id, collision.GetComponent<Projectile>().damage);
+            //GetComponent<Rigidbody2D>().AddForce(collision.otherRigidbody.velocity.normalized * 100f * (health.totalHealth / health.currentHealth));
         }
     }
     private void OnTriggerStay2D(Collider2D collision)
