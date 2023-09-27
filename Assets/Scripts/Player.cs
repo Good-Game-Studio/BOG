@@ -49,7 +49,16 @@ public class Player : MonoBehaviour
         print(mousePos);
         crossHair.position = Camera.main.ScreenToWorldPoint(mousePos);
         crossHair.position += new Vector3(0, 0, 10f);
-
+        playerDirection.y = 0;
+        if(crossHair.position.x > transform.position.x)
+        {
+            playerDirection.x = 1;
+        }
+        else
+        {
+            playerDirection.x = -1;
+        }
+        SetBodyAndWeaponTransform();
         RotateArm(crossHair.position);
     }
 
@@ -58,8 +67,17 @@ public class Player : MonoBehaviour
         //Vector2 angle = new Vector2(aimPos.x, aimPos.y) - (Vector2)rightHand.transform.position;
         Transform lookAtTrans = rightHand.transform;
         lookAtTrans.LookAt(new Vector3(aimPos.x, aimPos.y, 0), Vector2.up);
-        rightHand.transform.eulerAngles = new Vector3(0, 0, lookAtTrans.transform.eulerAngles.x + 90);
-
+        float dirMultiplier;
+        if(playerDirection.x > 0)
+        {
+            dirMultiplier = 1;
+        }
+        else
+        {
+            dirMultiplier = -1;
+        }
+        rightHand.transform.eulerAngles = new Vector3(0, 0, -(dirMultiplier*lookAtTrans.transform.eulerAngles.x) + (dirMultiplier*90));
+        
     }
 
     private void OnEnable()
@@ -95,8 +113,8 @@ public class Player : MonoBehaviour
     {
         if (currentWeapon != null && !isMeleeAttacking)
         {
-            Vector2 bulletDirection = playerDirection;
-            bulletDirection.y += UnityEngine.Random.Range(-5 / playerAttributes.accuracy, 5 / playerAttributes.accuracy);
+            Vector2 bulletDirection = currentWeapon.bulletSpawnPoint.right;
+            bulletDirection.y += UnityEngine.Random.Range(-5f / playerAttributes.accuracy, 5f / playerAttributes.accuracy);
             currentWeapon.Fire(bulletDirection);
         }
     }
@@ -146,12 +164,12 @@ public class Player : MonoBehaviour
         {
             //throw;
         }
-        if (obj.ReadValue<Vector2>() != Vector2.zero && obj.ReadValue<Vector2>() != playerDirection)
-        {
-            playerDirection = obj.ReadValue<Vector2>().normalized;
-            playerDirection.y = 0;
-            SetBodyAndWeaponTransform();
-        }
+        //if (obj.ReadValue<Vector2>() != Vector2.zero && obj.ReadValue<Vector2>() != playerDirection)
+        //{
+        //    playerDirection = obj.ReadValue<Vector2>().normalized;
+        //    playerDirection.y = 0;
+        //    SetBodyAndWeaponTransform();
+        //}
     }
     public void SetBodyAndWeaponTransform()
     {

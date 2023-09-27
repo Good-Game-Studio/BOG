@@ -80,8 +80,17 @@ public class Weapon : MonoBehaviour
     void SpawnBullet()
     {
         Vector2 spawnPosition = new Vector2(transform.position.x + (player.playerDirection.x * 1.1f), transform.position.y + (player.playerDirection.y * 1.1f));
-        PhotonNetwork.Instantiate("BulletMedium", bulletSpawnPoint.position, Quaternion.LookRotation(bulletSpawnPoint.right, Vector2.up),
-            0, new object[] { bulletDirection,player.playerDetails.id ,manager.bulletLifetime,manager.damage});
+        float dirMultiplier;
+        if (player.playerDirection.x > 0)
+        {
+            dirMultiplier = 1;
+        }
+        else
+        {
+            dirMultiplier = -1;
+        }
+        PhotonNetwork.Instantiate("BulletMedium", bulletSpawnPoint.position, Quaternion.LookRotation(bulletSpawnPoint.forward, bulletSpawnPoint.up),
+            0, new object[] { (dirMultiplier * bulletDirection), player.playerDetails.id ,manager.bulletLifetime,manager.damage});
         bulletInMag--;
         lastFireTime = Time.time;
         player.UpdateWeaponInfo(weaponName, bulletInMag.ToString(), totalBullets.ToString());
