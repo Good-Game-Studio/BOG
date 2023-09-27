@@ -28,6 +28,7 @@ public class Player : MonoBehaviour
     public GameObject rightHand;
     public Image reloadingImage;
     public MeleeWeapon meleeWeapon;
+    [SerializeField] Transform crossHair;
     int meleeStamina = 10;
     bool isMeleeAttacking = false;
     private void Awake()
@@ -41,7 +42,26 @@ public class Player : MonoBehaviour
         RoomManager._instance.targetGroup.AddMember(transform,1,3);
         playerMovementController = GetComponent<PlayerMovementController>();
     }
- 
+
+    internal void MousePos(Vector2 mousePos)
+    {
+        //Vector2 mousePos = context.ReadValue<Vector2>();
+        print(mousePos);
+        crossHair.position = Camera.main.ScreenToWorldPoint(mousePos);
+        crossHair.position += new Vector3(0, 0, 10f);
+
+        RotateArm(crossHair.position);
+    }
+
+    private void RotateArm(Vector3 aimPos)
+    {
+        //Vector2 angle = new Vector2(aimPos.x, aimPos.y) - (Vector2)rightHand.transform.position;
+        Transform lookAtTrans = rightHand.transform;
+        lookAtTrans.LookAt(new Vector3(aimPos.x, aimPos.y, 0), Vector2.up);
+        rightHand.transform.eulerAngles = new Vector3(0, 0, lookAtTrans.transform.eulerAngles.x + 90);
+
+    }
+
     private void OnEnable()
     {
         health.OnGetAttack += GetAttack;

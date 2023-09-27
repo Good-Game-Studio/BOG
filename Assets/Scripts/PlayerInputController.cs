@@ -30,6 +30,12 @@ public class PlayerInputController : MonoBehaviour
         playerActions.Dash.started += _ => Dash();
         playerActions.MeleeAttack.started += _ =>  MeleeAttack();
         playerActions.Throw.started += _ =>  Throw();
+        playerActions.AimDelta.started += _ => MousePos(_);
+    }
+
+    private void MousePos(InputAction.CallbackContext context)
+    {
+        player.MousePos(playerActions.Aim.ReadValue<Vector2>());
     }
 
     private void Throw()
@@ -49,7 +55,7 @@ public class PlayerInputController : MonoBehaviour
         playerActions.Dash.started -= _=> Dash();
         playerActions.MeleeAttack.started -= _ => MeleeAttack();
         playerActions.Throw.started -= _ => Throw();
-
+        playerActions.AimDelta.started -= _ => MousePos(_);
     }
 
 

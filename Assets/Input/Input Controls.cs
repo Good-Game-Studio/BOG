@@ -89,6 +89,24 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Aim"",
+                    ""type"": ""Value"",
+                    ""id"": ""dae922e9-f367-4434-8bd9-068444057ecc"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""AimDelta"",
+                    ""type"": ""Value"",
+                    ""id"": ""0542b6de-34b0-4a39-8ed4-9f5274d7968a"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -223,6 +241,28 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""action"": ""Throw"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2fe4d2c1-50f7-4823-a476-8d359d09ac75"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Aim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f5400919-2217-4355-93d8-7ce90cb30809"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AimDelta"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -238,6 +278,8 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
         m_Player_MeleeAttack = m_Player.FindAction("MeleeAttack", throwIfNotFound: true);
         m_Player_Throw = m_Player.FindAction("Throw", throwIfNotFound: true);
+        m_Player_Aim = m_Player.FindAction("Aim", throwIfNotFound: true);
+        m_Player_AimDelta = m_Player.FindAction("AimDelta", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -306,6 +348,8 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Dash;
     private readonly InputAction m_Player_MeleeAttack;
     private readonly InputAction m_Player_Throw;
+    private readonly InputAction m_Player_Aim;
+    private readonly InputAction m_Player_AimDelta;
     public struct PlayerActions
     {
         private @InputControls m_Wrapper;
@@ -317,6 +361,8 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
         public InputAction @MeleeAttack => m_Wrapper.m_Player_MeleeAttack;
         public InputAction @Throw => m_Wrapper.m_Player_Throw;
+        public InputAction @Aim => m_Wrapper.m_Player_Aim;
+        public InputAction @AimDelta => m_Wrapper.m_Player_AimDelta;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -347,6 +393,12 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
             @Throw.started += instance.OnThrow;
             @Throw.performed += instance.OnThrow;
             @Throw.canceled += instance.OnThrow;
+            @Aim.started += instance.OnAim;
+            @Aim.performed += instance.OnAim;
+            @Aim.canceled += instance.OnAim;
+            @AimDelta.started += instance.OnAimDelta;
+            @AimDelta.performed += instance.OnAimDelta;
+            @AimDelta.canceled += instance.OnAimDelta;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -372,6 +424,12 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
             @Throw.started -= instance.OnThrow;
             @Throw.performed -= instance.OnThrow;
             @Throw.canceled -= instance.OnThrow;
+            @Aim.started -= instance.OnAim;
+            @Aim.performed -= instance.OnAim;
+            @Aim.canceled -= instance.OnAim;
+            @AimDelta.started -= instance.OnAimDelta;
+            @AimDelta.performed -= instance.OnAimDelta;
+            @AimDelta.canceled -= instance.OnAimDelta;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -398,5 +456,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         void OnDash(InputAction.CallbackContext context);
         void OnMeleeAttack(InputAction.CallbackContext context);
         void OnThrow(InputAction.CallbackContext context);
+        void OnAim(InputAction.CallbackContext context);
+        void OnAimDelta(InputAction.CallbackContext context);
     }
 }
