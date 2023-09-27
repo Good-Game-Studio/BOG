@@ -46,7 +46,7 @@ public class Player : MonoBehaviour
     internal void MousePos(Vector2 mousePos)
     {
         //Vector2 mousePos = context.ReadValue<Vector2>();
-        print(mousePos);
+        //print(mousePos);
         crossHair.position = Camera.main.ScreenToWorldPoint(mousePos);
         crossHair.position += new Vector3(0, 0, 10f);
         playerDirection.y = 0;
