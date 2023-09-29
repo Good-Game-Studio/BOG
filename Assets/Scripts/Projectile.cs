@@ -35,6 +35,12 @@ public class Projectile : MonoBehaviour
         {
             return;
         }
+        if (collision.CompareTag("MeleeWeapon"))
+        {
+            rb.velocity = -rb.velocity;
+            return;
+        }
+
         //StreamDestroy(); 
         StopCoroutine(Start());
         PhotonNetwork.Destroy(gameObject);
