@@ -1,13 +1,9 @@
 using Cinemachine;
 using Photon.Pun;
-using Photon.Pun.Demo.PunBasics;
 using Photon.Realtime;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
 public class RoomManager : MonoBehaviourPunCallbacks
@@ -48,7 +44,9 @@ public class RoomManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
-        PhotonNetwork.Instantiate("PlayerPunk", new Vector3(), Quaternion.identity, 0, new object[] { PhotonNetwork.LocalPlayer.UserId, PlayerPrefs.GetString("gamerTag") });
+
+        Debug.Log(PlayerPrefs.GetString("char"));
+        PhotonNetwork.Instantiate(PlayerPrefs.GetString("char", Characters.PlayerCyborg.ToString()), new Vector3(), Quaternion.identity, 0, new object[] { PhotonNetwork.LocalPlayer.UserId, PlayerPrefs.GetString("gamerTag") });
         if (PhotonNetwork.IsMasterClient)
         {
             WeaponGenerator._instance.StartSpawning();
