@@ -50,6 +50,7 @@ public class PlayerMovementController : MonoBehaviour
     int dashStamina = 10;
     float dashTime;
     Vector2 lastVelocity = Vector2.zero;
+    [SerializeField] PlayerEcho playerEcho;
 
     private void Awake()
     {
@@ -175,6 +176,7 @@ public class PlayerMovementController : MonoBehaviour
     {
         player.health.isInvulnerable = true;
         rb.gravityScale = 0;
+        playerEcho.StartAfterImages();
         while (currentDashTimer > Time.time)
         {
             rb.velocity = Vector2.right * player.playerDirection.x * dashForce;
@@ -187,6 +189,7 @@ public class PlayerMovementController : MonoBehaviour
 
     IEnumerator DashCooldownCoroutine()
     {
+        playerEcho.DisableAfterImages();
         allowMovement = true;
         player.health.isInvulnerable = false;
         rb.gravityScale = 1;
