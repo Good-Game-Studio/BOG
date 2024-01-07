@@ -52,6 +52,7 @@ MonoBehaviour:
   - PlayerHitRpc
   - PlayerFellRpc
   - ThrowRPC
+  - MeleeShowFunctionality
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
